@@ -1,0 +1,57 @@
+# Render Blueprint — https://render.com/docs/blueprints
+#
+# Deploy options:
+#   A) Push this repo to GitHub, then in Render: New → Blueprint → pick the
+#      repo. Render reads this file and creates the service; it will prompt
+#      for the values marked "sync: false".
+#   B) Or create it manually: New → Web Service → pick the repo, and use
+#      Build: npm install && npm run build   /   Start: npm start
+#      with the same environment variables (see README.md).
+services:
+  - type: web
+    name: oci-a1-hunter
+    runtime: node
+    plan: free
+    # Pick the region closest to your OCI home region for the lowest latency.
+    region: singapore
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # --- login ---
+      - key: SITE_PASSWORD
+        sync: false
+      # --- OCI API key (prompted; secret) ---
+      - key: OCI_TENANCY_OCID
+        sync: false
+      - key: OCI_USER_OCID
+        sync: false
+      - key: OCI_FINGERPRINT
+        sync: false
+      - key: OCI_REGION
+        sync: false
+      - key: OCI_PRIVATE_KEY
+        sync: false
+      # --- hunt behaviour ---
+      - key: HUNTER_AUTOSTART
+        value: "true"
+      - key: HUNT_INSTANCE_COUNT
+        value: "1"
+      - key: HUNT_OCPUS
+        value: "4"
+      - key: HUNT_MEMORY_GBS
+        value: "24"
+      - key: HUNT_BOOT_VOLUME_GB
+        value: "50"
+      - key: HUNT_IMAGE_OS
+        value: "ubuntu-24"
+      - key: HUNT_RETRY_INTERVAL_SEC
+        value: "60"
+      # --- optional integrations (add values in the dashboard if wanted) ---
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
